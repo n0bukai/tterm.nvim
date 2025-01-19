@@ -7,11 +7,25 @@ even if the terminal buffer is not visible.
 The command is dependent on the filetype of the buffers you have entered (BufEnter event).
 Only the command matching the last visited filetype for which a command was defined will be used.
 
+### Installation
+With lazy:
+```lua
+require('lazy').setup({
+  spec = {
+        { "n0bukai/tterm.nvim",
+            opts ={
+                -- configuration here
+            },
+        },
+    },
+}
+```
+
 ### Configuration
 On setup the following options can be configured (shown are the default values):
 ```lua
 require("tterm.nvim").setup({
-    location = "left", -- above|below|left|right, defines where the term window goes
+    location = "below", -- above|below|left|right, defines where the term window goes
     skip_keymaps = false, -- whether to skip default keymaps on setup
     command_on_show = false, -- whether to automatically send the command when showing the terminal
     show_on_command = true, -- whether to automatically show the terminal when sending a command

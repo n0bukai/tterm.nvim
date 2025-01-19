@@ -62,7 +62,7 @@ local state = {
 --- the default options provided by the plugin
 --- @type Options
 local default_opts = {
-  location = "left",
+  location = "below",
   skip_keymaps = false,
   command_on_show = false,
   show_on_command = true,
@@ -214,7 +214,7 @@ M.setup = function(opts)
     })
 
   --- Autocommands
-  local au_group = vim.api.nvim_create_augroup("term-thingy-autocmds", { clear = true })
+  local au_group = vim.api.nvim_create_augroup("tterm-autocmds", { clear = true })
   vim.api.nvim_create_autocmd({ 'BufEnter', }, {
     group = au_group,
     callback = function(_)
