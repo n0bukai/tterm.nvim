@@ -150,7 +150,6 @@ M.setup = function(opts)
     vim.keymap.set("n", "<leader>tc",
       function()
         if state.opts.show_on_command then
-          print("Showing on command")
           M.show_term()
         end
         M.execute_command()
