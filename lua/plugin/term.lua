@@ -106,6 +106,9 @@ M.send_command = function(state)
     print("There is no longer a command for the " .. ft .. " filetype.")
     return
   end
+  if not state.channel then
+    M.create(state)
+  end
   if state.opts.clear_before_command then
     vim.api.nvim_chan_send(state.channel, "clear\n")
   end
