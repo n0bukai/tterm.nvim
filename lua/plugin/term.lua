@@ -49,7 +49,7 @@ M.show = function(state)
   if state.win then
     win_valid = vim.api.nvim_win_is_valid(state.win)
   end
-    if not vim.api.nvim_buf_is_valid(state.buf) then
+    if not state.buf or not vim.api.nvim_buf_is_valid(state.buf) then
       win_valid = false
     end
   if win_valid then
@@ -93,6 +93,10 @@ M.show = function(state)
     end -- if buf_valid
     vim.api.nvim_set_current_win(current_win)
   end   -- if win_valid
+
+  if state.opts.command_on_show then
+    M.send_command(state)
+  end
 end
 
 M.send_command = function(state)
@@ -100,6 +104,10 @@ M.send_command = function(state)
   if not ft then
     print "So far no filetype has had a valid command"
     return
+  end
+
+  if state.opts.show_on_command then
+    M.show(state)
   end
 
   local command = state.session_commands[ft] or state.commands[ft]
@@ -128,9 +136,6 @@ M.toggle = function(state)
     vim.api.nvim_win_hide(state.win)
   else
     M.show(state)
-    if state.opts.command_on_toggle then
-      M.send_command(state)
-    end
   end
 end
 

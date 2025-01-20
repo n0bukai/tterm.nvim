@@ -85,6 +85,9 @@ local default_commands = {
 --- @param command string: the command which will be sent to the terminal, no linebreaks required
 M.add_command = function(filetype, command)
   state.session_commands[filetype] = command
+  if(vim.bo.filetype == filetype) then
+    state.last_filetype = filetype
+  end
 end
 
 --- removes the session override for the provided filetype
@@ -149,9 +152,6 @@ M.setup = function(opts)
 
     vim.keymap.set("n", "<leader>tc",
       function()
-        if state.opts.show_on_command then
-          M.show_term()
-        end
         M.execute_command()
       end,
       { desc = "[T]erminal [C]ompile" })

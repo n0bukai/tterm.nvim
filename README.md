@@ -14,7 +14,7 @@ require('lazy').setup({
   spec = {
         { "n0bukai/tterm.nvim",
             opts ={
-                -- configuration here
+                -- configuration here, details below
             },
         },
     },
@@ -43,17 +43,10 @@ require("tterm.nvim").setup({
 
 The default keymaps mentioned in the options are:
 ```lua
-vim.keymap.set("n", "<leader>tt", M.toggle_term,
+vim.keymap.set("n", "<leader>tt", require("tterm.nvim").toggle_term,
     { desc = "[T]oggle [T]erminal" })
 
-vim.keymap.set("n", "<leader>tc",
-    function()
-        if state.opts.show_on_command then
-            print("Showing on command")
-            require("tterm.nvim").show_term()
-        end
-        require("tterm.nvim").execute_command()
-    end,
+vim.keymap.set("n", "<leader>tc", require("tterm.nvim").execute_command,
     { desc = "[T]erminal [C]ommand" })
 ```
 
@@ -63,9 +56,9 @@ The default keymaps are:
 * \<leader\>tt to toggle the window
 * \<leader\>tc to send a command
 ```lua
-require("tterm.nvim").show_term() -- this may be used after tc if show_on_command is true
+require("tterm.nvim").show_term() -- this may be used to ensure terminal window is shown
 require("tterm.nvim").toggle_term() -- this is used by tt
-require("tterm.nvim").execute_command() -- this is used by tc and may be used after toggle if command_on_show is true
+require("tterm.nvim").execute_command() -- this is used by tc and ,depending on settings, after tt
 ``` 
                       
 During the session one can add/remove command overrides:
