@@ -49,6 +49,9 @@ M.show = function(state)
   if state.win then
     win_valid = vim.api.nvim_win_is_valid(state.win)
   end
+    if not vim.api.nvim_buf_is_valid(state.buf) then
+      win_valid = false
+    end
   if win_valid then
     return
   else -- if win_valid
