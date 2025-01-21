@@ -24,7 +24,7 @@ require('lazy').setup({
 ### Configuration
 On setup the following options can be configured (shown are the default values):
 ```lua
-require("tterm.nvim").setup({
+require("tterm").setup({
     location = "below", -- above|below|left|right|float, if not defines where the term window goes
     skip_keymaps = false, -- whether to skip default keymaps on setup
     command_on_show = false, -- whether to automatically send the command when showing the terminal
@@ -45,10 +45,10 @@ require("tterm.nvim").setup({
 
 The default keymaps mentioned in the options are:
 ```lua
-vim.keymap.set("n", "<leader>tt", require("tterm.nvim").toggle_term,
+vim.keymap.set("n", "<leader>tt", require("tterm").toggle_term,
     { desc = "[T]oggle [T]erminal" })
 
-vim.keymap.set("n", "<leader>tc", require("tterm.nvim").execute_command,
+vim.keymap.set("n", "<leader>tc", require("tterm").execute_command,
     { desc = "[T]erminal [C]ommand" })
 ```
 
@@ -58,19 +58,19 @@ The default keymaps are:
 * \<leader\>tt to toggle the window
 * \<leader\>tc to send a command
 ```lua
-require("tterm.nvim").show_term() -- this may be used to ensure terminal window is shown
-require("tterm.nvim").toggle_term() -- this is used by tt
-require("tterm.nvim").execute_command() -- this is used by tc and ,depending on settings, after tt
+require("tterm").show_term() -- this may be used to ensure terminal window is shown
+require("tterm").toggle_term() -- this is used by tt
+require("tterm").execute_command() -- this is used by tc and ,depending on settings, after tt
 ``` 
                       
 During the session one can add/remove command overrides:
 ```lua
-require("tterm.nvim").add_command(filetype, command)
+require("tterm").add_command(filetype, command)
 -- the following user command does the same thing, only the first argument is interpreted as filetype
 -- :TermAddOverride {filetype} {Command}
 -- for example :TermAddOverride lua echo 'Sending echo for lua'
 
-require("tterm.nvim").remove_command(filetype)
+require("tterm").remove_command(filetype)
 -- the following user command does the same thing
 -- :TermRemoveOverride {filetype}
 ```
