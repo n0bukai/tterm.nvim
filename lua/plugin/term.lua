@@ -11,29 +11,43 @@ local M = {}
 --- appropriate place and sets the state fields for win buf and channel
 ---@param state State
 M.create = function(state)
-  -- create new window and make it a terminal
-  vim.cmd.vnew()
-  vim.cmd.term()
+  print(state.opts.location)
+  if state.opts.location == "float" then
+    --- do the float thing here
+    state.buf = vim.api.nvim_create_buf(false, true)
+    state.win = vim.api.nvim_open_win(state.buf, true, {
+      relative = 'win',
+      col = state.opts.x_offset,
+      row = state.opts.y_offset,
+      width = state.opts.width,
+      height = state.opts.height,
+    })
+    vim.cmd.term()
+  else
+    -- create new window and make it a terminal
+    vim.cmd.vnew()
+    vim.cmd.term()
 
-  local case = {
-    default = function()
-      vim.cmd.wincmd("H")
-      vim.api.nvim_win_set_width(0, state.opts.width)
-    end,
-    ["right"] = function()
-      vim.cmd.wincmd("L")
-      vim.api.nvim_win_set_width(0, state.opts.width)
-    end,
-    ["above"] = function()
-      vim.cmd.wincmd("K")
-      vim.api.nvim_win_set_height(0, state.opts.height)
-    end,
-    ["below"] = function()
-      vim.cmd.wincmd("J")
-      vim.api.nvim_win_set_height(0, state.opts.height)
-    end,
-  }
-  (case[state.opts.location] or case.default)()
+    local case = {
+      default = function()
+        vim.cmd.wincmd("H")
+        vim.api.nvim_win_set_width(0, state.opts.width)
+      end,
+      ["right"] = function()
+        vim.cmd.wincmd("L")
+        vim.api.nvim_win_set_width(0, state.opts.width)
+      end,
+      ["above"] = function()
+        vim.cmd.wincmd("K")
+        vim.api.nvim_win_set_height(0, state.opts.height)
+      end,
+      ["below"] = function()
+        vim.cmd.wincmd("J")
+        vim.api.nvim_win_set_height(0, state.opts.height)
+      end,
+    }
+    (case[state.opts.location] or case.default)()
+  end
 
   state.win = vim.api.nvim_get_current_win()
   state.buf = vim.api.nvim_get_current_buf()
@@ -49,9 +63,9 @@ M.show = function(state)
   if state.win then
     win_valid = vim.api.nvim_win_is_valid(state.win)
   end
-    if not state.buf or not vim.api.nvim_buf_is_valid(state.buf) then
-      win_valid = false
-    end
+  if not state.buf or not vim.api.nvim_buf_is_valid(state.buf) then
+    win_valid = false
+  end
   if win_valid then
     return
   else -- if win_valid
@@ -61,32 +75,42 @@ M.show = function(state)
     end
     if buf_valid then
       -- open new win only
-      vim.api.nvim_open_win(state.buf, true, {
-        split = state.opts.location,
-        win = 0,
-      })
+      if state.opts.location == "float" then
+        state.win = vim.api.nvim_open_win(state.buf, false, {
+          relative = 'win',
+          col = state.opts.x_offset,
+          row = state.opts.y_offset,
+          width = state.opts.width,
+          height = state.opts.height,
+        })
+      else
+        vim.api.nvim_open_win(state.buf, true, {
+          split = state.opts.location,
+          win = 0,
+        })
 
-      local case = {
-        default = function()
-          vim.cmd.wincmd("H")
-          vim.api.nvim_win_set_width(0, state.opts.width)
-        end,
-        ["right"] = function()
-          vim.cmd.wincmd("L")
-          vim.api.nvim_win_set_width(0, state.opts.width)
-        end,
-        ["above"] = function()
-          vim.cmd.wincmd("K")
-          vim.api.nvim_win_set_height(0, state.opts.height)
-        end,
-        ["below"] = function()
-          vim.cmd.wincmd("J")
-          vim.api.nvim_win_set_height(0, state.opts.height)
-        end,
-      }
-      (case[state.opts.location] or case.default)()
+        local case = {
+          default = function()
+            vim.cmd.wincmd("H")
+            vim.api.nvim_win_set_width(0, state.opts.width)
+          end,
+          ["right"] = function()
+            vim.cmd.wincmd("L")
+            vim.api.nvim_win_set_width(0, state.opts.width)
+          end,
+          ["above"] = function()
+            vim.cmd.wincmd("K")
+            vim.api.nvim_win_set_height(0, state.opts.height)
+          end,
+          ["below"] = function()
+            vim.cmd.wincmd("J")
+            vim.api.nvim_win_set_height(0, state.opts.height)
+          end,
+        }
+        (case[state.opts.location] or case.default)()
 
-      state.win = vim.api.nvim_get_current_win()
+        state.win = vim.api.nvim_get_current_win()
+      end
     else -- if buf_valid
       -- first time opening
       M.create(state)

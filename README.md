@@ -25,13 +25,15 @@ require('lazy').setup({
 On setup the following options can be configured (shown are the default values):
 ```lua
 require("tterm.nvim").setup({
-    location = "below", -- above|below|left|right, defines where the term window goes
+    location = "below", -- above|below|left|right|float, if not defines where the term window goes
     skip_keymaps = false, -- whether to skip default keymaps on setup
     command_on_show = false, -- whether to automatically send the command when showing the terminal
     show_on_command = true, -- whether to automatically show the terminal when sending a command
     clear_before_command = true -- whether to clear prior output on sending a command
     height = 15 -- if above or below window, how high it should be, else ignored
     width = 40 -- if left or right window, how wide it should be, else ignored
+    x_offset = 200, -- if floating column offset, else ignored
+    y_offset = 5, -- if floating line offset, else ignored
     commands = { -- a table of filetype, command pairs
         ["zig"] = "zig build",
         ["rust"] = "cargo build",

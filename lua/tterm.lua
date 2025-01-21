@@ -16,13 +16,14 @@ local term = require "plugin.term"
 --- | '"right"'
 --- | '"above"'
 --- | '"below"'
+--- | '"float"'
 
 --- @class State
 --- @field buf number|nil: the term buffer
 --- @field win number|nil: the term window
 --- @field channel number|nil: the channel for the commands sent to the term
 --- @field last_filetype string|nil: the most recent filetype for which a command was found
---- @field opts table|nil: the current options
+--- @field opts Options|nil: the current options
 --- @field session_commands table<string,string>: the commands defined in the current session
 --- @field commands table<string,string>: a table of filetype, command pairs
 
@@ -34,6 +35,8 @@ local term = require "plugin.term"
 --- @field clear_before_command boolean: clear prior output on sending a command
 --- @field height number: if above or below window, how high it should be
 --- @field width number: if left or right window, how wide it should be
+--- @field x_offset number: the column offset if floating, else ignored
+--- @field y_offset number: the line offset if floating, else ignored
 
 --- These are the options which are passed to setup and override the default values
 --- and may be nil to use default options instead
@@ -46,6 +49,8 @@ local term = require "plugin.term"
 --- @field height number|nil: if above or below window, how high it should be
 --- @field width number|nil: if left or right window, how wide it should be
 --- @field commands table<string,string>|nil: a table of filetype, command pairs
+--- @field x_offset number|nil: the column offset if floating, else ignored
+--- @field y_offset number|nil: the line offset if floating, else ignored
 
 --- the current state of the environment mostly regarding the term window/buffer
 --- @type State
@@ -69,6 +74,8 @@ local default_opts = {
   clear_before_command = true,
   height = 15,
   width = 40,
+  x_offset = 200,
+  y_offset = 5,
 }
 
 --- the default commands provided by the plugin
@@ -116,6 +123,8 @@ M.setup = function(opts)
   state.opts.location = opts.location or default_opts.location
   state.opts.height = opts.height or default_opts.height
   state.opts.width = opts.width or default_opts.width
+  state.opts.x_offset = opts.x_offset or default_opts.x_offset
+  state.opts.y_offset = opts.y_offset or default_opts.y_offset
   -- boolean|nil requires nil check
   if opts.skip_keymaps ~= nil then
     state.opts.skip_keymaps = opts.skip_keymaps
@@ -178,7 +187,7 @@ M.setup = function(opts)
         M.add_command(ft, command)
         print("Added command '" .. command .. "' for filetype " .. ft)
       else
-        print("Failed to add command, you need to provide both filetype and command.")
+        error("Failed to add command, you need to provide both filetype and command.")
       end
     end,
     {
@@ -200,7 +209,7 @@ M.setup = function(opts)
           print("Successfully removed command")
         end
       else
-        print("Failed to remove command, you need to provide a valid filetype.")
+        error("Failed to remove command, you need to provide a valid filetype.")
       end
     end,
     {
