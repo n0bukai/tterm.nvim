@@ -11,12 +11,11 @@ local M = {}
 --- appropriate place and sets the state fields for win buf and channel
 ---@param state State
 M.create = function(state)
-  print(state.opts.location)
   if state.opts.location == "float" then
     --- do the float thing here
     state.buf = vim.api.nvim_create_buf(false, true)
     state.win = vim.api.nvim_open_win(state.buf, true, {
-      relative = 'win',
+      relative = 'editor',
       col = state.opts.x_offset,
       row = state.opts.y_offset,
       width = state.opts.width,
@@ -77,7 +76,7 @@ M.show = function(state)
       -- open new win only
       if state.opts.location == "float" then
         state.win = vim.api.nvim_open_win(state.buf, false, {
-          relative = 'win',
+          relative = 'editor',
           col = state.opts.x_offset,
           row = state.opts.y_offset,
           width = state.opts.width,
