@@ -140,7 +140,7 @@ M.send_command = function(state)
     return
   end
 
-  if not state.buffer or vim.api.nvim_buf_is_valid(state.buffer) or not state.channel then
+  if not state.buffer or not vim.api.nvim_buf_is_valid(state.buffer) then
     M.create(state)
   end
 
