@@ -11,6 +11,7 @@ local M = {}
 --- appropriate place and sets the state fields for win buf and channel
 ---@param state State
 M.create = function(state)
+  local current_win = vim.api.nvim_get_current_win()
   if state.opts.location == "float" then
     --- do the float thing here
     state.buf = vim.api.nvim_create_buf(false, true)
@@ -51,6 +52,8 @@ M.create = function(state)
   state.win = vim.api.nvim_get_current_win()
   state.buf = vim.api.nvim_get_current_buf()
   state.channel = vim.bo.channel
+
+  vim.api.nvim_set_current_win(current_win)
 end
 
 --- never sends a command
@@ -129,10 +132,6 @@ M.send_command = function(state)
     return
   end
 
-  if state.opts.show_on_command then
-    M.show(state)
-  end
-
   local command = state.session_commands[ft] or state.commands[ft]
   if not command then
     -- can only reach here through defining a session command, then entering a buffer for which there is
@@ -140,9 +139,15 @@ M.send_command = function(state)
     print("There is no longer a command for the " .. ft .. " filetype.")
     return
   end
-  if not state.channel then
+
+  if not state.buffer or vim.api.nvim_buf_is_valid(state.buffer) or not state.channel then
     M.create(state)
   end
+
+  if state.opts.show_on_command then
+    M.show(state)
+  end
+
   if state.opts.clear_before_command then
     vim.api.nvim_chan_send(state.channel, "clear\n")
   end
